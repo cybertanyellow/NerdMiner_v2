@@ -31,6 +31,7 @@ bool nvMemory::saveConfig(TSettings* Settings)
         StaticJsonDocument<512> json;
         json[JSON_SPIFFS_KEY_POOLURL] = Settings->PoolAddress;
         json[JSON_SPIFFS_KEY_POOLPORT] = Settings->PoolPort;
+        json[JSON_SPIFFS_KEY_STOCKNUM] = Settings->StockNum;
         json[JSON_SPIFFS_KEY_POOLPASS] = Settings->PoolPassword;
         json[JSON_SPIFFS_KEY_WALLETID] = Settings->BtcWallet;
         json[JSON_SPIFFS_KEY_TIMEZONE] = Settings->Timezone;
@@ -94,6 +95,8 @@ bool nvMemory::loadConfig(TSettings* Settings)
                     strcpy(Settings->BtcWallet, json[JSON_SPIFFS_KEY_WALLETID] | Settings->BtcWallet);
                     if (json.containsKey(JSON_SPIFFS_KEY_POOLPORT))
                         Settings->PoolPort = json[JSON_SPIFFS_KEY_POOLPORT].as<int>();
+                    if (json.containsKey(JSON_SPIFFS_KEY_STOCKNUM))
+                        Settings->StockNum = json[JSON_SPIFFS_KEY_STOCKNUM].as<int>();
                     if (json.containsKey(JSON_SPIFFS_KEY_TIMEZONE))
                         Settings->Timezone = json[JSON_SPIFFS_KEY_TIMEZONE].as<int>();
                     if (json.containsKey(JSON_SPIFFS_KEY_STATS2NV))

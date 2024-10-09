@@ -129,6 +129,7 @@ Note: when BTC address of your selected wallet is not provided, mining will not 
   "PoolPassword": "x",
   "BtcWallet": "walletID",  
   "Timezone": 2,  
+  "StockNum": 2330,
   "SaveStats": false  
 }
 ```

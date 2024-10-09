@@ -16,6 +16,7 @@
 #define DEFAULT_POOLPASS	"x"
 #define DEFAULT_WALLETID	"yourBtcAddress"
 #define DEFAULT_POOLPORT	21496
+#define DEFAULT_STOCKNUM	2330
 #define DEFAULT_TIMEZONE	2
 #define DEFAULT_SAVESTATS	false
 #define DEFAULT_INVERTCOLORS	false
@@ -30,6 +31,7 @@
 #define JSON_KEY_POOLPASS	"PoolPassword"
 #define JSON_KEY_WALLETID	"BtcWallet"
 #define JSON_KEY_POOLPORT	"PoolPort"
+#define JSON_KEY_STOCKNUM	"StockNum"
 #define JSON_KEY_TIMEZONE	"Timezone"
 #define JSON_KEY_STATS2NV	"SaveStats"
 #define JSON_KEY_INVCOLOR	"invertColors"
@@ -37,6 +39,7 @@
 // JSON config file SPIFFS (different for backward compatibility with existing devices)
 #define JSON_SPIFFS_KEY_POOLURL		"poolString"
 #define JSON_SPIFFS_KEY_POOLPORT	"portNumber"
+#define JSON_SPIFFS_KEY_STOCKNUM	"stockNumber"
 #define JSON_SPIFFS_KEY_POOLPASS	"poolPassword"
 #define JSON_SPIFFS_KEY_WALLETID	"btcString"
 #define JSON_SPIFFS_KEY_TIMEZONE	"gmtZone"
@@ -52,6 +55,7 @@ struct TSettings
 	char BtcWallet[80]{ DEFAULT_WALLETID };
 	char PoolPassword[80]{ DEFAULT_POOLPASS };
 	int PoolPort{ DEFAULT_POOLPORT };
+	int StockNum{ DEFAULT_STOCKNUM };
 	int Timezone{ DEFAULT_TIMEZONE };
 	bool saveStats{ DEFAULT_SAVESTATS };
 	bool invertColors{ DEFAULT_INVERTCOLORS };

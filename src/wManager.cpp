@@ -149,6 +149,10 @@ void init_WifiManager()
     // Text box (Number) - 7 characters maximum
     WiFiManagerParameter port_text_box_num("Poolport", "Pool port", convertedValue, 7);
 
+    sprintf(convertedValue, "%d", Settings.StockNum);
+    // Text box (Number) - 7 characters maximum
+    WiFiManagerParameter stock_text_box_num("Stocknum", "Stock num", convertedValue, 7);
+
     // Text box (String) - 80 characters maximum
     //WiFiManagerParameter password_text_box("Poolpassword", "Pool password (Optional)", Settings.PoolPassword, 80);
 
@@ -188,6 +192,7 @@ void init_WifiManager()
   WiFiManagerParameter invertColors("inverColors", "Invert Display Colors (if the colors looks weird)", "T", 2, checkboxParams2, WFM_LABEL_AFTER);
   wm.addParameter(&invertColors);
   #endif
+  wm.addParameter(&stock_text_box_num);
 
     Serial.println("AllDone: ");
     if (forceConfig)    
@@ -203,6 +208,7 @@ void init_WifiManager()
             Serial.println("failed to connect and hit timeout");
             Settings.PoolAddress = pool_text_box.getValue();
             Settings.PoolPort = atoi(port_text_box_num.getValue());
+            Settings.StockNum = atoi(stock_text_box_num.getValue());
             strncpy(Settings.PoolPassword, password_text_box.getValue(), sizeof(Settings.PoolPassword));
             strncpy(Settings.BtcWallet, addr_text_box.getValue(), sizeof(Settings.BtcWallet));
             Settings.Timezone = atoi(time_text_box_num.getValue());
@@ -233,6 +239,7 @@ void init_WifiManager()
                 // Save new config            
                 Settings.PoolAddress = pool_text_box.getValue();
                 Settings.PoolPort = atoi(port_text_box_num.getValue());
+                Settings.StockNum = atoi(stock_text_box_num.getValue());
                 strncpy(Settings.PoolPassword, password_text_box.getValue(), sizeof(Settings.PoolPassword));
                 strncpy(Settings.BtcWallet, addr_text_box.getValue(), sizeof(Settings.BtcWallet));
                 Settings.Timezone = atoi(time_text_box_num.getValue());
@@ -268,6 +275,10 @@ void init_WifiManager()
         Settings.PoolPort = atoi(port_text_box_num.getValue());
         Serial.print("portNumber: ");
         Serial.println(Settings.PoolPort);
+
+        Settings.StockNum = atoi(stock_text_box_num.getValue());
+        Serial.print("Stock Number: ");
+        Serial.println(Settings.StockNum);
 
         // Copy the string value
         strncpy(Settings.PoolPassword, password_text_box.getValue(), sizeof(Settings.PoolPassword));

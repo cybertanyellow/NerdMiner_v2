@@ -119,6 +119,8 @@ bool SDCard::loadConfigFile(TSettings* Settings)
                     strcpy(Settings->BtcWallet, json[JSON_KEY_WALLETID] | Settings->BtcWallet);
                     if (json.containsKey(JSON_KEY_POOLPORT))
                         Settings->PoolPort = json[JSON_KEY_POOLPORT].as<int>();
+                    if (json.containsKey(JSON_KEY_STOCKNUM))
+                        Settings->StockNum = json[JSON_KEY_STOCKNUM].as<int>();
                     if (json.containsKey(JSON_KEY_TIMEZONE))
                         Settings->Timezone = json[JSON_KEY_TIMEZONE].as<int>();
                     if (json.containsKey(JSON_KEY_STATS2NV))

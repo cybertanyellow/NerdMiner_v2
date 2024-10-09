@@ -79,6 +79,7 @@ void m5stackDisplay_NoScreen(unsigned long mElapsed)
   M5.Lcd.drawLine(0,200,320,200,GREENYELLOW);
   M5.Lcd.print("Pool: "); M5.Lcd.setTextColor(GREENYELLOW); M5.Lcd.print(Settings.PoolAddress); M5.Lcd.print(":"); M5.Lcd.println(Settings.PoolPort); M5.Lcd.setTextColor(WHITE);
   M5.Lcd.print("IP  : "); M5.Lcd.setTextColor(GREENYELLOW); M5.Lcd.println(WiFi.localIP()); M5.Lcd.setTextColor(WHITE);
+  M5.Lcd.print("Stock: "); M5.Lcd.setTextColor(GREENYELLOW); M5.Lcd.print(Settings.PoolAddress); M5.Lcd.print(":"); M5.Lcd.println(Settings.StockNum); M5.Lcd.setTextColor(WHITE);
   M5.Lcd.println("");
 }
 void m5stackDisplay_LoadingScreen(void)
