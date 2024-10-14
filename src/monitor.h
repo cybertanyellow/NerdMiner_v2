@@ -31,6 +31,10 @@
 #define getPublicPool "https://public-pool.io:40557/api/client/" // +btcString
 #define UPDATE_POOL_min   1
 
+//API Stock price (Update to USDT cus it's more liquidity and flow price updade)   
+#define getStockAPI "http://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_%04u.tw"
+#define UPDATE_STOCK_min  5
+
 #define NEXT_HALVING_EVENT 1050000 //840000
 #define HALVING_BLOCKS 210000
 
@@ -83,6 +87,7 @@ typedef struct {
   String blockHeight;
   String currentTime;  
   String currentDate;
+  String stockPrice;
 }clock_data;
 
 typedef struct {
@@ -111,6 +116,7 @@ typedef struct {
   String blockHeight;
   float progressPercent;
   String remainingBlocks;
+  String stockPrice;
 }coin_data;
 
 typedef struct{

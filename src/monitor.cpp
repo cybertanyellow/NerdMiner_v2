@@ -30,6 +30,7 @@ bool invertColors = false;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
 unsigned int bitcoin_price=0;
+unsigned int stock_price=0;
 String current_block = "793261";
 global_data gData;
 pool_data pData;
@@ -180,6 +181,47 @@ String getBTCprice(void){
   return (String(bitcoin_price) + "$");
 }
 
+unsigned long mStockUpdate = 0;
+
+String getStockprice(void){
+    
+    if((mStockUpdate == 0) || (millis() - mStockUpdate > UPDATE_STOCK_min * 60 * 1000)){
+    
+        if (WiFi.status() != WL_CONNECTED) return (String(stock_price) + "$");
+        
+        HTTPClient http;
+	char getApi[128] = {0};
+	sprintf(getApi, getStockAPI, Settings.StockNum);
+        try {
+        http.begin(getApi);
+        int httpCode = http.GET();
+
+        if (httpCode == HTTP_CODE_OK) {
+            String payload = http.getString();
+
+            DynamicJsonDocument doc(1024);
+            deserializeJson(doc, payload);
+            if (doc.containsKey("msgArray")) {
+                JsonArray msgArray= doc["msgArray"];
+                for(JsonObject v : msgArray) {
+                    stock_price = v["z"];
+                }
+            }
+
+            doc.clear();
+
+            mStockUpdate = millis();
+        }
+        
+        http.end();
+        } catch(...) {
+          http.end();
+        }
+    }
+  
+  return (String(stock_price) + "$");
+}
+
 unsigned long mTriggerUpdate = 0;
 unsigned long initialMillis = millis();
 unsigned long initialTime = 0;
@@ -279,6 +321,7 @@ clock_data getClockData(unsigned long mElapsed)
   data.blockHeight = getBlockHeight();
   data.currentTime = getTime();
   data.currentDate = getDate();
+  data.stockPrice = getStockprice();
 
   return data;
 }
@@ -315,6 +358,7 @@ coin_data getCoinData(unsigned long mElapsed)
   data.netwrokDifficulty = gData.difficulty;
   data.globalHashRate = gData.globalHash;
   data.blockHeight = getBlockHeight();
+  data.stockPrice = getStockprice();
 
   unsigned long currentBlock = data.blockHeight.toInt();
   unsigned long remainingBlocks = (((currentBlock / HALVING_BLOCKS) + 1) * HALVING_BLOCKS) - currentBlock;
