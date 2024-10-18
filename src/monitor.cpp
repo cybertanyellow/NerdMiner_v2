@@ -219,7 +219,8 @@ String getStockprice(void){
         }
     }
   
-  return (String(stock_price) + "$");
+  return (String(stock_price));
+  //return (String(1234));
 }
 
 unsigned long mTriggerUpdate = 0;
@@ -306,6 +307,7 @@ mining_data getMiningData(unsigned long mElapsed)
   data.valids = valids;
   data.temp = String(temperatureRead(), 0);
   data.currentTime = getTime();
+  data.stockPrice = getStockprice();
 
   return data;
 }

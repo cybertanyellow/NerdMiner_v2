@@ -77,6 +77,7 @@ typedef struct {
   String valids;
   String temp;
   String currentTime;
+  String stockPrice;
 }mining_data;
 
 typedef struct {

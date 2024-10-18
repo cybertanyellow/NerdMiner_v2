@@ -66,7 +66,8 @@ void tDisplay_MinerScreen(unsigned long mElapsed)
   // Print background screen
   background.pushImage(0, 0, MinerWidth, MinerHeight, MinerScreen);
 
-  Serial.printf(">>> Completed %s share(s), %s Khashes, avg. hashrate %s KH/s\n",
+  Serial.printf(">>> Stock %s Completed %s share(s), %s Khashes, avg. hashrate %s KH/s\n",
+                data.stockPrice.c_str(),
                 data.completedShares.c_str(), data.totalKHashes.c_str(), data.currentHashRate.c_str());
 
   // Hashrate
@@ -74,10 +75,16 @@ void tDisplay_MinerScreen(unsigned long mElapsed)
   render.setCursor(19, 118);
   render.setFontColor(TFT_BLACK);
 
-  render.rdrawString(data.currentHashRate.c_str(), 118, 114, TFT_BLACK);
+  // Stock
+  render.rdrawString(data.stockPrice.c_str(), 118, 114, TFT_BLACK);
+
   // Total hashes
   render.setFontSize(18);
   render.rdrawString(data.totalMHashes.c_str(), 268, 138, TFT_BLACK);
+
+  // HashRate KH/s
+  render.rdrawString(data.currentHashRate.c_str(), 222, 138, TFT_BLACK);
+
   // Block templates
   render.setFontSize(18);
   render.drawString(data.templates.c_str(), 186, 20, 0xDEDB);
