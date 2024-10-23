@@ -10,6 +10,7 @@
 #include "monitor.h"
 #include "OpenFontRender.h"
 #include "rotation.h"
+#include "drivers/storage/storage.h"
 
 #define WIDTH 340
 #define HEIGHT 170
@@ -66,17 +67,22 @@ void tDisplay_MinerScreen(unsigned long mElapsed)
   // Print background screen
   background.pushImage(0, 0, MinerWidth, MinerHeight, MinerScreen);
 
-  Serial.printf(">>> Stock %s Completed %s share(s), %s Khashes, avg. hashrate %s KH/s\n",
-                data.stockPrice.c_str(),
+  Serial.printf(">>> Stock %f Completed %s share(s), %s Khashes, avg. hashrate %s KH/s\n",
+                data.stockPrice,
                 data.completedShares.c_str(), data.totalKHashes.c_str(), data.currentHashRate.c_str());
 
   // Hashrate
-  render.setFontSize(35);
+  render.setFontSize(29);
   render.setCursor(19, 118);
   render.setFontColor(TFT_BLACK);
 
   // Stock
-  render.rdrawString(data.stockPrice.c_str(), 118, 114, TFT_BLACK);
+  extern TSettings Settings; 
+  render.rdrawString(String(data.stockPrice).c_str(), 140, 120,
+		  (data.stockPrice > data.stockOpen) ?
+		  TFT_GREEN : TFT_RED);
+  render.setFontSize(10);
+  render.rdrawString(String(Settings.StockNum).c_str(), 40, 105, TFT_BLACK);
 
   // Total hashes
   render.setFontSize(18);

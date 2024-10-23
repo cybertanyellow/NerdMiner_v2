@@ -30,7 +30,7 @@ bool invertColors = false;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 60000);
 unsigned int bitcoin_price=0;
-unsigned int stock_price=0;
+double stock_price=0.0;
 String current_block = "793261";
 global_data gData;
 pool_data pData;
@@ -183,11 +183,14 @@ String getBTCprice(void){
 
 unsigned long mStockUpdate = 0;
 
-String getStockprice(void){
+double getStockprice(mining_data *data){
     
     if((mStockUpdate == 0) || (millis() - mStockUpdate > UPDATE_STOCK_min * 60 * 1000)){
     
-        if (WiFi.status() != WL_CONNECTED) return (String(stock_price) + "$");
+        if (WiFi.status() != WL_CONNECTED) {
+		data->stockOpen = 0.0;
+		return stock_price;
+	}
         
         HTTPClient http;
 	char getApi[128] = {0};
@@ -199,19 +202,46 @@ String getStockprice(void){
         if (httpCode == HTTP_CODE_OK) {
             String payload = http.getString();
 
-            DynamicJsonDocument doc(1024);
-            deserializeJson(doc, payload);
-            if (doc.containsKey("msgArray")) {
-                JsonArray msgArray= doc["msgArray"];
-                for(JsonObject v : msgArray) {
-                    stock_price = v["z"];
-                }
-            }
+            payload.trim();
+	    Serial.printf("[%s] url %s payload %s\n", __func__, getApi, payload.c_str());
 
-            doc.clear();
+	    if (payload.length()) {
+		    DynamicJsonDocument doc(2048);
+		    deserializeJson(doc, payload);
+		    if (doc.containsKey("msgArray")) {
+			    const JsonArray& msgs= doc["msgArray"].as<JsonArray>();
+			    for(const JsonObject& msg : msgs) {
+				    if (msg.containsKey("z")) {
+					    Serial.printf("[%s] doc.msgArray.[].z as %f\n", __func__,
+							    msg["z"].as<double>());
+					    stock_price = msg["z"].as<double>();
+					    data->stockOpen = msg["o"].as<double>();
+				    }
+				    else {
+					    Serial.printf("[%s] z field not found\n", __func__);
+				    }
+
+			    }
+		    }
+		    else
+			    Serial.printf("[%s] doc.msgArray not found\n", __func__);
+
+		    doc.clear();
+	    }
 
             mStockUpdate = millis();
         }
+	else if (httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
+            String payload = http.getString();
+	    String newUrl = http.getLocation();
+
+	    Serial.printf("[%s] url %s header-location %s, payload %s\n",
+			    __func__, getApi,
+			    newUrl.c_str(),
+			    payload.c_str());
+	}
+	else
+	    Serial.printf("[%s] url %s fail %d\n", __func__, getApi, httpCode);
         
         http.end();
         } catch(...) {
@@ -219,8 +249,7 @@ String getStockprice(void){
         }
     }
   
-  return (String(stock_price));
-  //return (String(1234));
+  return stock_price;
 }
 
 unsigned long mTriggerUpdate = 0;
@@ -307,7 +336,7 @@ mining_data getMiningData(unsigned long mElapsed)
   data.valids = valids;
   data.temp = String(temperatureRead(), 0);
   data.currentTime = getTime();
-  data.stockPrice = getStockprice();
+  data.stockPrice = getStockprice(&data);
 
   return data;
 }
@@ -323,7 +352,7 @@ clock_data getClockData(unsigned long mElapsed)
   data.blockHeight = getBlockHeight();
   data.currentTime = getTime();
   data.currentDate = getDate();
-  data.stockPrice = getStockprice();
+  //data.stockPrice = getStockprice();
 
   return data;
 }
@@ -360,7 +389,7 @@ coin_data getCoinData(unsigned long mElapsed)
   data.netwrokDifficulty = gData.difficulty;
   data.globalHashRate = gData.globalHash;
   data.blockHeight = getBlockHeight();
-  data.stockPrice = getStockprice();
+  //data.stockPrice = getStockprice();
 
   unsigned long currentBlock = data.blockHeight.toInt();
   unsigned long remainingBlocks = (((currentBlock / HALVING_BLOCKS) + 1) * HALVING_BLOCKS) - currentBlock;

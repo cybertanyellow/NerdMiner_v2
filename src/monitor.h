@@ -32,8 +32,8 @@
 #define UPDATE_POOL_min   1
 
 //API Stock price (Update to USDT cus it's more liquidity and flow price updade)   
-#define getStockAPI "http://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_%04u.tw"
-#define UPDATE_STOCK_min  5
+#define getStockAPI "https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_%04u.tw"
+#define UPDATE_STOCK_min  1
 
 #define NEXT_HALVING_EVENT 1050000 //840000
 #define HALVING_BLOCKS 210000
@@ -77,7 +77,8 @@ typedef struct {
   String valids;
   String temp;
   String currentTime;
-  String stockPrice;
+  double stockPrice;
+  double stockOpen;
 }mining_data;
 
 typedef struct {
