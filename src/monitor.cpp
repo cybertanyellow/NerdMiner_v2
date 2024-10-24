@@ -212,10 +212,15 @@ double getStockprice(mining_data *data){
 			    const JsonArray& msgs= doc["msgArray"].as<JsonArray>();
 			    for(const JsonObject& msg : msgs) {
 				    if (msg.containsKey("z")) {
-					    Serial.printf("[%s] doc.msgArray.[].z as %f\n", __func__,
-							    msg["z"].as<double>());
 					    stock_price = msg["z"].as<double>();
 					    data->stockOpen = msg["o"].as<double>();
+					    if (stock_price == 0.0) {
+						    stock_price = msg["y"].as<double>();
+					    }
+					    Serial.printf("[%s] current[%s] start[%s] yesterday[%s]\n", __func__,
+							    msg["z"].as<const char *>(),
+							    msg["o"].as<const char *>(),
+							    msg["y"].as<const char *>());
 				    }
 				    else {
 					    Serial.printf("[%s] z field not found\n", __func__);
